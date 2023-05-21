@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
@@ -32,8 +32,24 @@ async function run() {
 
 
         app.get('/toys', async (req, res) => {
-            const result = toysCollection.find().toArray();
+            const result = await toysCollection.find().toArray();
             res.send(result);
+        })
+
+        // send single toy detail
+        app.get('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const toy = await toysCollection.findOne(query);
+            res.send(toy);
+        })
+
+        //sub_category
+        app.get('/toys/:category', async (req, res) => {
+            const category = req.params.category;
+            const query = { sub_category: category }
+            const toy = await toysCollection.find(query).toArray;
+            res.send(toy);
         })
 
         // Send a ping to confirm a successful connection
@@ -53,5 +69,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Car Doctor Server is running on port ${port}`)
+    console.log(`Toys Server is running on port ${port}`)
 })
