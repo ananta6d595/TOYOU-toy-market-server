@@ -30,7 +30,7 @@ async function run() {
 
         const toysCollection = client.db('lego').collection('toys');
 
-
+        // all toys
         app.get('/toys', async (req, res) => {
             const result = await toysCollection.find().toArray();
             res.send(result);
@@ -45,12 +45,22 @@ async function run() {
         })
 
         //sub_category
-        app.get('/toys/:category', async (req, res) => {
-            const category = req.params.category;
-            const query = { sub_category: category }
-            const toy = await toysCollection.find(query).toArray;
-            res.send(toy);
+        // app.get('/toys/:category', async (req, res) => {
+        //     const category = req.params.category.toString();
+        //     const query = { sub_category: category }
+        //     const toys = await toysCollection.find(query).toArray();
+        //     res.send(toys);
+        // })
+
+        app.post('/addToys', async (req, res) => {
+            const toyDetails = req.body;
+            console.log(toyDetails);
+            const result = await toysCollection.insertOne(toyDetails);
+            res.send(result);
         })
+
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
