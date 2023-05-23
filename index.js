@@ -6,7 +6,14 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
-app.use(cors());
+const corsConfig = {
+    origin: '*',
+    credential: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
+}
+
+app.use(cors(corsConfig));
+// app.use(cors());
 app.use(express.json());
 
 
@@ -26,13 +33,22 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+         client.connect();
 
         const toysCollection = client.db('lego').collection('toys');
 
         // all toys
         app.get('/toys', async (req, res) => {
             const result = await toysCollection.find().toArray();
+            res.send(result);
+        })
+
+        app.get('/toys/Ascending', async (req, res) => {
+            const result = await toysCollection.find().sort({price:1}).toArray();
+            res.send(result);
+        })
+        app.get('/toys/Descending', async (req, res) => {
+            const result = await toysCollection.find().sort({price:-1}).toArray();
             res.send(result);
         })
 
