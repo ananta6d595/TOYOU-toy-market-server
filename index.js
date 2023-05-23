@@ -39,7 +39,7 @@ async function run() {
         // send single toy detail
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             const toy = await toysCollection.findOne(query);
             res.send(toy);
         })
@@ -58,6 +58,28 @@ async function run() {
             const result = await toysCollection.insertOne(toyDetails);
             res.send(result);
         })
+
+
+        app.patch('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const updatedToy = req.body;
+            const updateDoc = {
+                $set: updatedToy
+            }
+            const result = await toysCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+
+
+        app.delete('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.deleteOne(query);
+            res.send(result);
+        })
+
 
 
 
